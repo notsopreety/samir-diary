@@ -41,45 +41,25 @@ import IconQuote from "@/assets/icons/IconQuote.svg";
   // Fetch quote from API
   async function fetchDailyQuote() {
     try {
-      // Try multiple quote APIs for better reliability
-      const apis = [
-        'http://api.samirb.com.np/quotable/random',
-        'https://zenquotes.io/api/today',
-        'https://api.quotable.io/quotes/random'
-      ];
+      const response = await fetch('http://api.samirb.com.np/quotable/random');
       
-      for (const api of apis) {
-        try {
-          const response = await fetch(api);
-          if (!response.ok) continue;
-          
-          const data = await response.json();
-          let quote, author;
-          
-          // Handle different API response formats
-          if (api.includes('quotable.io')) {
-            quote = data.content || data[0]?.content;
-            author = data.author || data[0]?.author;
-          } else if (api.includes('zenquotes.io')) {
-            quote = data[0]?.q;
-            author = data[0]?.a;
-          }
-          
-          if (quote && author) {
-            displayQuote(quote, author);
-            return;
-          }
-        } catch (error) {
-          console.log(`API ${api} failed, trying next...`);
-          continue;
-        }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // If all APIs fail, show fallback
+      const data = await response.json();
+      
+      // Handle the new API response format
+      if (data.content && data.author) {
+        displayQuote(data.content, data.author);
+        return;
+      }
+      
+      // If response format is unexpected, show fallback
       showFallbackQuote();
       
     } catch (error) {
-      console.error('All quote APIs failed:', error);
+      console.error('Quote API failed:', error);
       showFallbackQuote();
     }
   }
