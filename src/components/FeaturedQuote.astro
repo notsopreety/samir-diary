@@ -41,8 +41,7 @@ import IconQuote from "@/assets/icons/IconQuote.svg";
   // Fetch quote from API
   async function fetchDailyQuote() {
     try {
-      const response = await fetch('http://api.samirb.com.np/quotable/random');
-      
+      const response = await fetch('https://api.samirb.com.np/quotes');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -50,12 +49,15 @@ import IconQuote from "@/assets/icons/IconQuote.svg";
       const data = await response.json();
       
       // Handle the new API response format
-      if (data.content && data.author) {
-        displayQuote(data.content, data.author);
-        return;
+      if (Array.isArray(data) && data.length > 0) {
+        const quoteData = data[0];
+        if (quoteData.quote && quoteData.author) {
+          displayQuote(quoteData.quote, quoteData.author);
+          return;
+        }
       }
       
-      // If response format is unexpected, show fallback
+      // If no valid quote found, show fallback
       showFallbackQuote();
       
     } catch (error) {
