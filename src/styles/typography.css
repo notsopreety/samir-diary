@@ -1,0 +1,119 @@
+/* typography.css */
+
+@plugin '@tailwindcss/typography';
+
+@layer base {
+  .app-prose {
+    @apply prose;
+
+    h1 {
+      font-size: 2.5rem;
+      font-family: 'Patrick Hand', cursive;
+      @apply mb-6 mt-4 text-accent;
+    }
+
+    h2, h3, h4 {
+      font-family: 'Patrick Hand', cursive;
+      @apply text-accent italic;
+    }
+  
+    th {
+       font-family: 'Caveat', cursive; 
+       @apply text-accent italic;
+    }
+  
+
+    p, strong, ol, ul, figcaption, table, code {
+      font-family: 'Patrick Hand', cursive;
+      @apply text-foreground text-[1.1rem];
+    }
+
+    a {
+      @apply break-words text-accent underline decoration-wavy underline-offset-4 hover:text-foreground;
+    }
+
+    ul {
+      @apply list-disc pl-5;
+    }
+
+    li {
+      @apply marker:text-accent;
+    }
+
+    hr {
+      @apply border-border;
+    }
+
+    img {
+      @apply mx-auto border border-border;
+    }
+
+    figcaption {
+      @apply opacity-75 italic text-center;
+    }
+
+    table {
+      th, td {
+        @apply border border-border p-2;
+      }
+
+      th {
+        @apply py-1.5 bg-muted;
+      }
+
+      code {
+        @apply break-all sm:break-normal;
+      }
+    }
+
+    code {
+      @apply rounded bg-muted/75 p-1 text-foreground font-mono before:content-none after:content-none;
+    }
+
+    .astro-code code {
+      @apply flex-[1_0_100%] bg-inherit p-0;
+    }
+
+    blockquote {
+      @apply border-l-4 border-accent pl-4 italic opacity-80 bg-muted rounded-md;
+      font-family: 'Patrick Hand', cursive;
+    }
+
+    details {
+      @apply inline-block cursor-pointer select-none [&_p]:hidden [&_ul]:!my-0;
+    }
+
+    summary {
+      @apply text-foreground focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
+    }
+
+    pre {
+      @apply bg-muted text-foreground p-4 rounded-md overflow-x-auto;
+      font-family: 'Courier New', monospace;
+    }
+  }
+
+  /* Code diff / highlight (optional) */
+  .astro-code {
+    @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
+  }
+
+  html[data-theme="dark"] .astro-code {
+    @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+  }
+
+  .astro-code {
+    .line.diff.add {
+      @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];
+    }
+    .line.diff.remove {
+      @apply relative inline-block w-full bg-red-500/20 before:absolute before:-left-3 before:text-red-500 before:content-['-'];
+    }
+    .line.highlighted {
+      @apply inline-block w-full bg-orange-200/40;
+    }
+    .highlighted-word {
+      @apply rounded-sm border border-border px-0.5 py-px;
+    }
+  }
+}

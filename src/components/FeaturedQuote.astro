@@ -1,0 +1,215 @@
+---
+// Featured Quote Component with API integration
+// Fetches daily inspirational quotes for diary vibe
+import IconQuote from "@/assets/icons/IconQuote.svg";
+---
+
+<div class="featured-quote-container">
+  <div class="quote-header">
+    <IconQuote class="quote-icon" />
+    <div class="quote-title-date">
+      <h3 class="text-base font-semibold text-accent">Today's Inspiration</h3>
+      <div class="text-xs text-foreground/70 italic">
+        {new Date().toLocaleDateString('en-US', { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric' 
+        })}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Quote Content -->
+  <div id="quote-content" class="quote-text">
+    <div class="text-center py-4 text-muted">
+      <p class="text-sm">Loading inspiration...</p>
+    </div>
+  </div>
+  
+  <!-- Fallback Quote -->
+  <div id="quote-fallback" class="quote-text" style="display: none;">
+    <blockquote class="text-sm italic text-foreground leading-relaxed">
+      "The pages of a diary are the windows to the soul, where thoughts find their voice and experiences become wisdom."
+    </blockquote>
+    <cite class="block text-xs text-foreground/70 mt-2 text-right">
+      — Samir's Diary
+    </cite>
+  </div>
+</div>
+
+<script is:inline>
+  // Fetch quote from API
+  async function fetchDailyQuote() {
+    try {
+      // Try multiple quote APIs for better reliability
+      const apis = [
+        'https://api.quotable.io/random',
+        'https://zenquotes.io/api/today',
+        'https://api.quotable.io/quotes/random'
+      ];
+      
+      for (const api of apis) {
+        try {
+          const response = await fetch(api);
+          if (!response.ok) continue;
+          
+          const data = await response.json();
+          let quote, author;
+          
+          // Handle different API response formats
+          if (api.includes('quotable.io')) {
+            quote = data.content || data[0]?.content;
+            author = data.author || data[0]?.author;
+          } else if (api.includes('zenquotes.io')) {
+            quote = data[0]?.q;
+            author = data[0]?.a;
+          }
+          
+          if (quote && author) {
+            displayQuote(quote, author);
+            return;
+          }
+        } catch (error) {
+          console.log(`API ${api} failed, trying next...`);
+          continue;
+        }
+      }
+      
+      // If all APIs fail, show fallback
+      showFallbackQuote();
+      
+    } catch (error) {
+      console.error('All quote APIs failed:', error);
+      showFallbackQuote();
+    }
+  }
+  
+  function displayQuote(quote, author) {
+    const quoteContent = document.getElementById('quote-content');
+    if (quoteContent) {
+      quoteContent.innerHTML = `
+        <blockquote class="text-sm italic text-foreground leading-relaxed">
+          "${quote}"
+        </blockquote>
+        <cite class="block text-xs text-foreground/70 mt-2 text-right">
+          — ${author}
+        </cite>
+      `;
+    }
+  }
+  
+  function showFallbackQuote() {
+    const quoteContent = document.getElementById('quote-content');
+    const fallbackQuote = document.getElementById('quote-fallback');
+    
+    if (quoteContent) quoteContent.style.display = 'none';
+    if (fallbackQuote) fallbackQuote.style.display = 'block';
+  }
+  
+  // Initialize quote when component loads
+  fetchDailyQuote();
+  
+  // Re-fetch quote on page navigation (for SPA behavior)
+  document.addEventListener('astro:after-swap', function() {
+    setTimeout(fetchDailyQuote, 500);
+  });
+</script>
+
+<style>
+  .featured-quote-container {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    background: var(--muted);
+    position: relative;
+  }
+  
+  .quote-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .quote-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  
+  .quote-title-date {
+    flex: 1;
+  }
+  
+  .quote-text {
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .quote-text blockquote {
+    position: relative;
+    padding-left: 1rem;
+  }
+  
+  .quote-text blockquote::before {
+    content: """;
+    position: absolute;
+    left: 0;
+    top: -0.3rem;
+    font-size: 1.5rem;
+    color: var(--accent);
+    opacity: 0.4;
+    font-family: serif;
+  }
+  
+  .quote-text cite {
+    font-style: normal;
+    position: relative;
+  }
+  
+  .quote-text cite::before {
+    content: "— ";
+    color: var(--accent);
+    font-weight: 500;
+  }
+  
+  /* Loading state */
+  #quote-content .text-muted {
+    font-style: italic;
+    color: var(--foreground);
+    opacity: 0.7;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .featured-quote-container {
+      padding: 0.75rem;
+      margin: 0.75rem 0;
+    }
+    
+    .quote-text blockquote {
+      font-size: 0.875rem;
+      padding-left: 0.75rem;
+    }
+    
+    .quote-text blockquote::before {
+      font-size: 1.25rem;
+      top: -0.2rem;
+    }
+  }
+  
+  /* Dark mode enhancements */
+  @media (prefers-color-scheme: dark) {
+    .featured-quote-container {
+      border-color: var(--border);
+    }
+  }
+  
+  html[data-theme="dark"] .featured-quote-container {
+    border-color: var(--border);
+  }
+</style>

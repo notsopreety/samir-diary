@@ -1,0 +1,81 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { SITE } from "@/config";
+---
+
+<Layout title={`404 - Lost in My Diary | ${SITE.title}`}>
+  <Header />
+
+  <main
+    id="main-content"
+    class="mx-auto flex max-w-app flex-1 items-center justify-center px-4"
+  >
+    <div class="mb-14 flex flex-col items-center justify-center text-center">
+      <!-- Decorative elements -->
+      <div class="mb-8 flex items-center gap-4">
+        <div class="h-1 w-16 bg-accent"></div>
+        <span class="text-6xl">📖</span>
+        <div class="h-1 w-16 bg-accent"></div>
+      </div>
+      
+      <!-- Main 404 display -->
+      <h1 class="text-8xl font-bold text-accent mb-4 sm:text-9xl">404</h1>
+      
+      <!-- Diary-themed message -->
+      <div class="mb-8">
+        <p class="text-2xl font-semibold text-foreground mb-2 sm:text-3xl">
+          Oops! This page seems to be missing from my diary...
+        </p>
+        <p class="text-lg text-foreground/80 italic">
+          Like a lost entry that got misplaced somewhere in the pages of time.
+        </p>
+      </div>
+      
+      <!-- Fun emoji -->
+      <div class="mb-8 text-4xl" aria-hidden="true">
+        🤔📝
+      </div>
+      
+      <!-- Helpful message -->
+      <div class="mb-8 max-w-md">
+        <p class="text-base text-foreground mb-4">
+          Don't worry! Even the best diaries have missing pages. 
+          Let's get you back to reading my thoughts and experiences.
+        </p>
+      </div>
+      
+      <!-- Navigation options -->
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <LinkButton
+          href="/"
+          class="text-lg underline decoration-dashed underline-offset-8 hover:text-accent transition-colors"
+        >
+          📚 Back to Diary Home
+        </LinkButton>
+        <span class="text-foreground/50 hidden sm:block">•</span>
+        <LinkButton
+          href="/posts/"
+          class="text-lg underline decoration-dashed underline-offset-8 hover:text-accent transition-colors"
+        >
+          📖 Browse All Entries
+        </LinkButton>
+      </div>
+      
+      <!-- Additional help -->
+      <div class="mt-8 text-sm text-foreground/70">
+        <p>Or try searching for what you're looking for:</p>
+        <LinkButton
+          href="/search/"
+          class="text-sm underline decoration-dotted underline-offset-4 hover:text-accent transition-colors mt-2"
+        >
+          🔍 Search My Diary
+        </LinkButton>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

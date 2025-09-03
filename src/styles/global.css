@@ -1,0 +1,99 @@
+/* global.css */
+
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+html[data-theme="light"] {
+  --background: #fdf6e3;       /* paper background */
+  --foreground: #3c2f2f;       /* ink-like brown */
+  --accent: #ff7043;           /* warm orange */
+  --muted: #f0e7d5;            /* soft beige */
+  --border: #d6c4a3;           /* vintage border */
+  --font-primary: 'Patrick Hand', cursive;
+}
+
+html[data-theme="dark"] {
+  --background: #2e2b28;
+  --foreground: #fefefe;
+  --accent: #ffb347;
+  --muted: #4f453e;
+  --border: #7c6f64;
+  --font-primary: 'Patrick Hand', cursive;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+  }
+
+  body {
+    @apply flex min-h-svh flex-col bg-background text-foreground selection:bg-accent/75 selection:text-background;
+    font-family: var(--font-primary), cursive;
+    letter-spacing: 0.03em;
+    line-height: 1.75;
+  
+    /* Paper texture (CSS only) */
+    background-color: var(--background);
+    background-image:
+      linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 100% 4px, 4px 100%, 100% 100%;
+    background-blend-mode: multiply;
+  }
+  
+  /* Optional vignette shadow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.05);
+  }
+  
+
+  a,
+  button {
+    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  section,
+  footer {
+    @apply mx-auto max-w-app px-4;
+  }
+}
+
+@utility max-w-app {
+  @apply max-w-3xl;
+}
+
+.active-nav {
+  @apply underline decoration-wavy decoration-2 underline-offset-4;
+}
+
+:target {
+  scroll-margin-block: 1rem;
+}

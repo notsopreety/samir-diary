@@ -1,0 +1,360 @@
+---
+import { SITE } from "@/config";
+
+interface Props {
+  url: string;
+  numPosts?: number;
+  width?: string;
+  orderBy?: "social" | "time" | "reverse_time";
+}
+
+const {
+  url,
+  numPosts = 5, // Limit to 5 comments initially
+  width = "100%",
+  orderBy = "social",
+} = Astro.props;
+
+const commentUrl = new URL(url, SITE.website).href;
+---
+
+<div class="comments-section my-8">
+  <h3 class="comments-title">Comments</h3>
+  
+  <div class="fb-comments-wrapper">
+    <!-- White box container for better visibility -->
+    <div class="fb-comments-container">
+      <!-- Simple Facebook Comments implementation -->
+      <div class="fb-comments" 
+           data-href={commentUrl}
+           data-width="100%"
+           data-numposts={numPosts}
+           data-order-by={orderBy}
+           data-lazy="true"
+           data-mobile="auto"></div>
+           
+      <!-- Only keep the reload option for when comments fail to load -->
+      <div id="fb-comments-fallback" class="hidden">
+        <button id="reload-comments" class="reload-button">Reload Comments</button>
+      </div>
+    </div>
+  </div>
+  
+  <p class="privacy-notice">
+    Comments are powered by Facebook. By using this feature, you agree to Facebook's <a href="https://www.facebook.com/policies/cookies/" target="_blank" rel="noopener noreferrer">Cookie Policy</a> and <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+  </p>
+</div>
+
+<style>
+  .comments-section {
+    margin: 2rem 0;
+  }
+  
+  .comments-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--color-accent);
+  }
+  
+  .fb-comments-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
+  
+  .fb-comments-container {
+    width: 100%;
+    background-color: white;
+    padding: 16px;
+    max-width: 100%;
+    max-height: 500px; /* Limit height to create scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* For Firefox */
+  }
+  
+  /* Custom scrollbar styling for webkit browsers */
+  .fb-comments-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .fb-comments-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .fb-comments-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  /* Force light mode for Facebook comments for better visibility */
+  .fb-comments {
+    background-color: white !important;
+    color: #333 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  .fb-comments,
+  .fb-comments iframe {
+    width: 100% !important;
+    background: white !important;
+    max-width: 100% !important;
+  }
+  
+  /* Enhanced responsiveness for Facebook comments */
+  .fb-comments span, 
+  .fb-comments iframe span,
+  .fb-comments iframe,
+  .fb-comments .fb_iframe_widget_fluid_desktop iframe {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  /* Fix Facebook plugin styling */
+  .fb-comments,
+  .fb-comments span,
+  .fb-comments iframe span,
+  .fb-comments iframe,
+  .fb_iframe_widget,
+  .fb_iframe_widget span,
+  .fb_iframe_widget span iframe[style],
+  .fb_iframe_widget_fluid_desktop,
+  .fb_iframe_widget_fluid_desktop span,
+  .fb_iframe_widget_fluid_desktop iframe {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  /* Force Facebook iframe to use light theme */
+  .fb-comments iframe {
+    background-color: white !important;
+  }
+  
+  .reload-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .reload-button:hover {
+    opacity: 0.9;
+  }
+  
+  .privacy-notice {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.75rem;
+  }
+  
+  .privacy-notice a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  
+  .privacy-notice a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsiveness improvements */
+  @media (max-width: 768px) {
+    .fb-comments-container {
+      padding: 12px;
+      max-height: 400px; /* Slightly smaller on tablets */
+    }
+    
+    .comments-title {
+      font-size: 1.25rem;
+    }
+    
+    /* Fix Facebook comment plugin width on tablets */
+    .fb-comments iframe {
+      width: 100% !important;
+    }
+    
+    .fb-comments div[style*="width"] {
+      width: 100% !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .fb-comments-container {
+      padding: 10px 8px;
+      max-height: 350px; /* Smaller on mobile */
+    }
+    
+    .fb-comments-wrapper {
+      border-radius: 6px;
+    }
+    
+    /* Mobile optimizations */
+    .comments-section {
+      margin: 1.5rem 0;
+    }
+    
+    /* Ensure the Facebook comment plugin doesn't overflow on mobile */
+    .fb-comments, 
+    .fb-comments span,
+    .fb-comments iframe {
+      width: 100% !important;
+    }
+    
+    /* Fix for mobile input field */
+    .fb-comments .UFIInputContainer,
+    .fb-comments .UFIList {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+    
+    /* Custom scrollbar for mobile */
+    .fb-comments-container::-webkit-scrollbar {
+      width: 5px;
+    }
+  }
+  
+  /* Additional fixes for very small screens */
+  @media (max-width: 360px) {
+    .fb-comments-container {
+      padding: 8px 5px;
+      max-height: 300px; /* Even smaller on tiny screens */
+    }
+    
+    .fb-comments-wrapper {
+      margin-left: -5px;
+      margin-right: -5px;
+      width: calc(100% + 10px);
+    }
+  }
+</style>
+
+<script is:inline>
+  // Enhanced responsive script with forced light mode
+  document.addEventListener('astro:page-load', function() {
+    // Function to handle comment rendering
+    function renderComments() {
+      const fallbackElement = document.getElementById('fb-comments-fallback');
+      
+      if (window.FB && window.FB.XFBML) {
+        const fbComments = document.querySelector('.fb-comments');
+        
+        if (fbComments) {
+          // Always use light mode for better visibility
+          fbComments.setAttribute('data-colorscheme', 'light');
+          
+          // Set mobile attribute based on screen width
+          const isMobile = window.innerWidth < 768;
+          fbComments.setAttribute('data-mobile', isMobile ? 'true' : 'false');
+          
+          // Force width to be 100% for proper responsiveness
+          fbComments.setAttribute('data-width', '100%');
+          
+          // Parse XFBML to render comments
+          window.FB.XFBML.parse();
+          
+          // Apply responsive fixes after comments load
+          applyResponsiveFixes();
+          
+          // Check if comments loaded after a delay
+          setTimeout(() => {
+            const commentFrame = document.querySelector('.fb-comments iframe');
+            if (!commentFrame && fallbackElement) {
+              fallbackElement.classList.remove('hidden');
+            } else if (commentFrame) {
+              // Ensure iframe is responsive
+              ensureFrameIsResponsive(commentFrame);
+            }
+          }, 2000);
+        }
+      } else {
+        // If FB SDK isn't ready, try again shortly
+        setTimeout(renderComments, 800);
+      }
+    }
+    
+    // Function to ensure Facebook iframe is responsive
+    function ensureFrameIsResponsive(frame) {
+      try {
+        // Set width to 100% if possible
+        frame.style.width = '100%';
+        frame.style.maxWidth = '100%';
+        
+        // Try to access iframe content if possible (might be blocked by CORS)
+        if (frame.contentDocument) {
+          const style = document.createElement('style');
+          style.textContent = `
+            body, html { width: 100% !important; overflow-x: hidden !important; }
+            .UFIList, .UFICommentContainer, .UFIInputContainer, ._5vn8 { width: 100% !important; max-width: 100% !important; }
+            ._5vsj, ._5vsj * { box-sizing: border-box !important; max-width: 100% !important; }
+          `;
+          frame.contentDocument.head.appendChild(style);
+        }
+      } catch (e) {
+        // Silent fail for CORS issues
+      }
+    }
+    
+    // Apply responsive fixes to all comments elements
+    function applyResponsiveFixes() {
+      // Add extra responsive class to container
+      const container = document.querySelector('.fb-comments-container');
+      if (container) container.classList.add('responsive-comments');
+      
+      // Add resize listener to adjust iframe sizes when window resizes
+      window.addEventListener('resize', function() {
+        const commentFrames = document.querySelectorAll('.fb-comments iframe');
+        commentFrames.forEach(ensureFrameIsResponsive);
+      });
+      
+      // Fix any inline styles that might be breaking responsiveness
+      setTimeout(() => {
+        const allElements = document.querySelectorAll('.fb-comments *');
+        allElements.forEach(el => {
+          if (el.style && el.style.width && el.style.width !== '100%') {
+            el.style.maxWidth = '100%';
+          }
+        });
+        
+        // Fix iframe sizing
+        const commentFrames = document.querySelectorAll('.fb-comments iframe');
+        commentFrames.forEach(ensureFrameIsResponsive);
+      }, 3000);
+    }
+    
+    // Initialize comments rendering
+    renderComments();
+    
+    // Add reload functionality
+    document.getElementById('reload-comments')?.addEventListener('click', () => {
+      const fallbackElement = document.getElementById('fb-comments-fallback');
+      if (fallbackElement) fallbackElement.classList.add('hidden');
+      renderComments();
+    });
+  });
+  
+  // Also initialize on first page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Only run if not in an Astro transition
+    if (!window.isAstroTransition) {
+      setTimeout(() => {
+        renderComments();
+      }, 300);
+    }
+  });
+  
+  // Make variables available globally for debugging if needed
+  window.fbCommentsReload = function() {
+    renderComments();
+    return "Attempting to reload Facebook comments...";
+  };
+</script> 
